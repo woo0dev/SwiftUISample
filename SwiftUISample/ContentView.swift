@@ -7,48 +7,44 @@
 
 import SwiftUI
 
+struct CarMaker {
+    let name: String
+    let imageUrl: String
+    let numberOfStore: Int
+}
+
+extension CarMaker {
+    static func all() -> [CarMaker] {
+        return [
+            CarMaker(name: "기아자동차", imageUrl: "car1", numberOfStore: 2000),
+            CarMaker(name: "현대자동차", imageUrl: "car2", numberOfStore: 2100),
+            CarMaker(name: "쌍용자동차", imageUrl: "car3", numberOfStore: 2200)
+        ]
+    }
+}
+
 struct ContentView: View {
     
-    let genderType = ["남성", "여성", "비밀"]
-    
-    @State var name = ""
-    @State var gender = 0
-    @State var bornIn = 0
-    
-    var resultScript:String{
-        if(name.isEmpty) {
-            return "이름을 입력해주세요."
-        } else {
-            return "\(name)님은 성별이 \(genderType[gender])이며 나이는 \(120 - bornIn)입니다."
-        }
-    }
+    let carMakers = CarMaker.all()
     
     var body: some View {
-        NavigationView{
-            Form{
-                Section(header: Text("이름")){
-                    TextField("이름을 입력해주세요.", text: $name).keyboardType(/*@START_MENU_TOKEN@*/.default/*@END_MENU_TOKEN@*/)
-                }
-                Section(header: Text("생년월일")){
-                    Picker("출생년도", selection: $bornIn) {
-                        ForEach(1900 ..< 2021) {
-                            Text("\(String($0))년생")
-                        }
-                    }
-                }
-                Section(header: Text("성별")) {
-                    Picker("성별",selection: $gender) {
-                        ForEach(0 ..< genderType.count) {
-                            Text("\(self.genderType[$0])")
-                        }
-                    }.pickerStyle(SegmentedPickerStyle())
-                }
-                Section(header: Text("결과")) {
-                    Text("\(resultScript)")
-                }
-            }.navigationTitle("회원가입")
+        List(self.carMakers, id: \.name) {
+            carMaker in CarMakerCell(carMaker: carMaker)
         }
     }
+}
+
+struct CarMakerCell: View {
+    let carMaker: CarMaker
+    var body: some View {
+        HStack {
+            Image(carMaker.imageUrl).resizable().frame(width: 100, height: 100).cornerRadius(16)
+            VStack(alignment: .leading) {
+                Text(carMaker.name).font(.largeTitle)
+                Text("\(carMaker.numberOfStore) 지점")
+            }
+        }
+    }   
 }
 
 struct ContentView_Previews: PreviewProvider {
